@@ -90,7 +90,7 @@ anim = animation.FuncAnimation(fig, animate, init_func=init, frames=int(len(y_da
   
 # save the animation as mp4 video file 
 writergif=animation.PillowWriter(fps=30)
-anim.save('Visual.gif', writer =animation.PillowWriter(fps=1) ) 
+anim.save('Visual.gif', writer =animation.PillowWriter(fps=10) ) 
 
 #plt.plot(t**3) 
 plt.show() 
