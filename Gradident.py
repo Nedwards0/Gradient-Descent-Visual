@@ -16,11 +16,11 @@ def function(x):
     x=x**2
     return(x)
 error=5
-starting_point=700
+starting_point=5
 increment=.1
 last=500
-up_looper=starting_point*3
-lw_loower=0-(starting_point*3)
+up_looper=starting_point*2
+lw_loower=0-(starting_point*2)
 range=up_looper-lw_loower
 point=100
 increment=range/point
@@ -38,8 +38,8 @@ increment=starting_point*2
 y_data.append(function(starting_point))
 x_data.append((starting_point))
 counter=0
-while(abs(error)>.00000005):
-    if(abs(derivative(starting_point+increment))<abs(derivative(starting_point-increment))):
+while(abs(error)>.05):
+    if((derivative(starting_point+increment))<-1*(derivative(starting_point-increment))):
         starting_point=starting_point+increment
         error= abs(derivative(starting_point))
         last=starting_point
