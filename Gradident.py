@@ -3,7 +3,6 @@ import matplotlib.animation as animation
 import numpy as np 
 import math
 
-#benis
 y_data=[]
 x_data=[]
 fig = plt.figure('c2') 
