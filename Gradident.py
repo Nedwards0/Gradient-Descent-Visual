@@ -1,95 +1,64 @@
-import matplotlib.pyplot as plt 
-import matplotlib.animation as animation 
-import numpy as np 
-import math
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.animation import FuncAnimation
+from matplotlib.animation import PillowWriter
 
-y_data=[]
-x_data=[]
-fig = plt.figure('c2') 
-ax = plt.axes() 
-line, = ax.plot([], [], lw=4) 
-def derivative(x):
-    x=2*x
-    return(x)
-def function(x):
-    x=x**2
-    return(x)
-error=5
-starting_point=5
-increment=.1
-last=500
-up_looper=starting_point*2
-lw_loower=0-(starting_point*2)
-range=up_looper-lw_loower
-point=100
-increment=range/point
-plot_x=[]
-plot_y=[]
-x=0
 
-while (x<point):
-  x=x+1
-  plot_x.append(lw_loower)
-  plot_y.append(function(lw_loower))
-  lw_loower=lw_loower+increment
-plt.plot(plot_x,plot_y,'--')
-increment=starting_point*2
-y_data.append(function(starting_point))
-x_data.append((starting_point))
-counter=0
-while(abs(error)>.05):
-    if((derivative(starting_point+increment))<-1*(derivative(starting_point-increment))):
-        starting_point=starting_point+increment
-        error= abs(derivative(starting_point))
-        last=starting_point
-    
-    else:
-        starting_point=starting_point-increment
-        error= last-starting_point
-        last=starting_point
-    y_data.append(function(starting_point))
-    x_data.append((starting_point))
-    if starting_point==0:
-      break
-    counter=counter+1
-    increment=increment*(.75)
-print(starting_point)
-print(len(x_data))
-# initialization function 
-def init(): 
-    # creating an empty plot/frame 
-    line.set_data([], []) 
-    return line, 
-  
-# lists to store x and y axis points 
-xdata, ydata = [], [] 
-  
-# animation function 
-def animate(i): 
-      
-    # x, y values to be plotted 
-    x = x_data[i]
-    y = y_data[i]
-      
-    # appending new points to x, y axes points list 
-    xdata.append(x) 
-    ydata.append(y) 
-      
-    # set/update the x and y axes data 
-    line.set_data(xdata, ydata) 
-      
-    # return line object 
-    return line, 
-      
-# setting a title for the plot 
-plt.title('Gradient Descent!') 
-  
-# call the animator     
-anim = animation.FuncAnimation(fig, animate, init_func=init, frames=int(len(y_data)), interval=1, blit=True) 
-  
-# save the animation as mp4 video file 
-writergif=animation.PillowWriter(fps=30)
-anim.save('Visual.gif', writer =animation.PillowWriter(fps=10) ) 
+def f(x, y): # Function to run gradient descent on
+    return (1 - x)**2 + 100 * (y - x**2)**2
 
-#plt.plot(t**3) 
-plt.show() 
+def grad_f(x, y): # Gradient of the function
+    dfdx = -2 * (1 - x) - 400 * x * (y - x**2)
+    dfdy = 200 * (y - x**2)
+    return np.array([dfdx, dfdy])
+
+lr = 0.001
+x, y = -1.5, 1.5  # starting point
+points = [(x, y, f(x, y))]
+
+for _ in range(2000):
+    grad = grad_f(x, y)
+    if np.linalg.norm(grad) < 1e-3:
+        break
+    x -= lr * grad[0]
+    y -= lr * grad[1]
+    points.append((x, y, f(x, y)))
+
+points = np.array(points)
+
+X = np.linspace(-2, 2, 400)
+Y = np.linspace(-1, 3, 400)
+X, Y = np.meshgrid(X, Y)
+Z = f(X, Y)
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X, Y, Z, cmap=cm.inferno, alpha=0.7, edgecolor='none')
+line, = ax.plot([], [], [], 'cyan', lw=2, label='Descent Path')
+dot, = ax.plot([], [], [], 'ro', markersize=5)
+
+ax.set_title('Gradient Descent on Rosenbrock Function', fontsize=14)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('f(x, y)')
+ax.view_init(elev=45, azim=135)
+
+# Animation setup
+def init():
+    line.set_data([], [])
+    line.set_3d_properties([])
+    dot.set_data([], [])
+    dot.set_3d_properties([])
+    return line, dot
+
+def animate(i):
+    line.set_data(points[:i+1, 0], points[:i+1, 1])
+    line.set_3d_properties(points[:i+1, 2])
+    dot.set_data(points[i, 0:1], points[i, 1:2])
+    dot.set_3d_properties(points[i, 2:3])
+    return line, dot
+
+anim = FuncAnimation(fig, animate, init_func=init, frames=len(points), interval=30, blit=True)
+writer = PillowWriter(fps=60)
+anim.save("gradient_descent.gif", writer=writer, dpi=100)
