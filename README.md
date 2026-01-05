@@ -1,24 +1,27 @@
-# Gradient-Descent-Visual
-Changing the function and derivative functions will return gif showing the steps of Gradient Descent.
+# Gradient Descent Visualizer
 
-This is a min finding algorthim that is used alot in AI for SGD models.
+A minimal, from-scratch implementation of **gradient descent** with
+3D visualization of the optimization trajectory using matplotlib.
 
-This will return a animation showing the steps that Gradient Descent will take to find the root.
+This project is intentionally small (~60 lines) and focuses on
+**understanding optimization dynamics**, not scale or framework usage.
 
-<div align="center">
-  Example Run.
-  
-  ![Alt Text](Visual.gif)
+## Overview
+- Implements batch gradient descent without ML frameworks
+- Manually derived gradients (no autograd)
+- Visualizes convergence on the **Rosenbrock function**, a classic
+  non-convex optimization benchmark
+- Outputs an animated GIF showing the descent path
 
-</div>
+## Why this exists
+This project was built to explore:
+- Learning rate stability
+- Convergence behavior in narrow valleys
+- Optimization geometry and intuition
 
 ## How to Run
-1. Change function and derivative in code 
+Modify the objective function and its gradient in the code, then run:
 
-2.
+```bash
+python Gradident.py
 ```
- python Gradident.py 
-
-```
-
-
